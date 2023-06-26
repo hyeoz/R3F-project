@@ -1,0 +1,11 @@
+* {
+    text-align: center;
+}
+
+button {
+    padding: 2px;
+    border: 1px solid blue;
+    border-radius: 4px;
+    color: blue;
+    background-color: #fff;
+}
