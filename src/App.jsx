@@ -21,6 +21,8 @@ function App() {
       //   toneMapping: THREE.LinearToneMapping,
       //   outputEncoding: THREE.LinearEncoding // deprecated
       // }}
+      // shadow 설정 필요
+      shadows={false}
     >
       <Experience />
     </Canvas>
