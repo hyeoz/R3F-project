@@ -9,7 +9,7 @@ export default function TreeBoy(props) {
   //   console.log(animations);
 
   const { animationName } = useControls({
-    animationName: { options: animations.names },
+    animationName: { options: animations.names.filter((a) => !a.includes('mixamo')) },
   });
 
   useEffect(() => {
