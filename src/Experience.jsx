@@ -1,6 +1,7 @@
 import { useRef } from "react";
-import { OrbitControls } from "@react-three/drei";
+import { OrbitControls, Stats } from "@react-three/drei";
 import { button, useControls } from "leva";
+import { Perf } from "r3f-perf";
 import * as THREE from "three";
 
 export default function Experience() {
@@ -9,7 +10,7 @@ export default function Experience() {
 
   // const controls = useControls({position: -2}) // 기본값 추가 가능
   // console.log(controls) // 객체로 출력됨
-  const { position, color, visible, interval } = useControls('folder1', {
+  const { position, color, visible, interval } = useControls("folder1", {
     // 구조분해할당 가능
     position: {
       // value: -2,
@@ -25,23 +26,27 @@ export default function Experience() {
     interval: {
       min: -3,
       max: 3,
-      value: [-2, 2]
+      value: [-2, 2],
     },
   });
-  const {select} = useControls('folder2', { // 첫번째 인자는 선택사항, 폴더명으로 묶을 수 있음
-    
+  const { select, perfVisible } = useControls("folder2", {
+    // 첫번째 인자는 선택사항, 폴더명으로 묶을 수 있음
     clickMe: button(() => {
-      alert('hello world')
+      alert(select);
     }),
     select: {
-      options: ['CASE1', 'CASE2', 'CASE3']
-    }
-  })
-
-  console.log(select)
+      options: ["CASE1", "CASE2", "CASE3"],
+    },
+    perfVisible: true,
+  });
 
   return (
     <>
+      {/* FPS 를 포함한 다양한 항목 확인 가능 */}
+      {perfVisible && <Perf position="top-left" />}
+      {/* drei 에서도 FPS는 확인 가능 */}
+      {/* <Stats /> */}
+
       <OrbitControls />
       <ambientLight intensity={0.5} />
       <directionalLight position={[1, 2, 3]} intensity={1.5} />
