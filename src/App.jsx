@@ -1,7 +1,7 @@
-import "./App.css";
 import { Canvas } from "@react-three/fiber";
-import Experience from "./Experience";
 import * as THREE from 'three'
+import Experience from "./Experience";
+import "./App.css";
 
 function App() {
   return (

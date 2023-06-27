@@ -6,3 +6,24 @@
     height: 100vh;
     overflow: hidden;
 }
+
+.label>div {
+    background: #00000088;
+    color: white;
+    padding: 15px 32px;
+    white-space: nowrap;
+    overflow: hidden;
+    border-radius: 30px;
+    user-select: none;
+}
+
+.label2>div {
+    font-size: 0.5em;
+    background: #00000088;
+    color: yellow;
+    padding: 5px 10px;
+    white-space: nowrap;
+    overflow: hidden;
+    border-radius: 30px;
+    user-select: none;
+}
