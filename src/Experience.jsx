@@ -1,8 +1,9 @@
-import { OrbitControls, SoftShadows, Environment } from "@react-three/drei";
 import * as THREE from "three";
-import Character from "./Character";
+import { OrbitControls, SoftShadows, Environment } from "@react-three/drei";
 import { Physics, RigidBody } from "@react-three/rapier";
 import { Perf } from "r3f-perf";
+
+import Character from "./Character";
 
 export default function Experience() {
   return (
