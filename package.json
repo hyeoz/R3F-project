@@ -1,5 +1,5 @@
 {
-  "name": "project_hyeoz",
+  "name": "3d-interaction",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -10,14 +10,19 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@react-three/drei": "^9.77.4",
+    "@react-three/drei": "^9.77.7",
     "@react-three/fiber": "^8.13.4",
+    "@react-three/postprocessing": "^2.14.12",
+    "@react-three/rapier": "^1.1.1",
     "@types/three": "^0.152.1",
+    "lamina": "^1.1.23",
     "leva": "^0.9.35",
+    "postprocessing": "^6.32.1",
     "r3f-perf": "^7.1.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "three": "^0.153.0"
+    "three": "^0.153.0",
+    "three-stdlib": "^2.23.10"
   },
   "devDependencies": {
     "@types/react": "^18.0.37",
