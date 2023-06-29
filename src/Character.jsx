@@ -34,7 +34,7 @@ const getDirectionOffset = (keys) => {
   return directionOffset;
 };
 
-function Character({orbitControls}, ref) {
+function Character({ orbitControls }, ref) {
   const model = useGLTF("./Robot.glb");
   const [subKeys, getSubKeys] = useKeyboardControls();
 
@@ -67,10 +67,32 @@ function Character({orbitControls}, ref) {
     if (playActionNameRef.current === actionName) return;
 
     const action = animations.actions[actionName];
-    const prevAction = animations.actions[playActionNameRef.current];
+    // 액션간 전환 자연스럽게
+    action.enabled = true;
 
-    action?.reset().fadeIn(0.5).play();
-    prevAction?.fadeOut(0.5);
+    if (playActionNameRef.current) {
+      const prevAction = animations.actions[playActionNameRef.current];
+
+      if (
+        playActionNameRef.current === "Walk" ||
+        playActionNameRef.current === "Run"
+      ) {
+        const ratio = action.getClip().duration / prevAction.getClip().duration;
+        action.time = prevAction.time * ratio;
+      } else {
+        action.time = 0.0;
+        action.setEffectiveTimeScale(1.0);
+        action.setEffectiveWeight(1.0);
+      }
+
+      action.crossFadeFrom(prevAction, 0.5, true);
+      action.play();
+    } else {
+      action.play();
+    }
+
+    // action?.reset().fadeIn(0.5).play();
+    // prevAction?.fadeOut(0.5);
 
     playActionNameRef.current = actionName;
   }, []);
@@ -89,6 +111,8 @@ function Character({orbitControls}, ref) {
         playAction("Run");
         speedRef.current = RUN_SPEED;
       }
+    } else if (keys.jump) {
+      playAction("Jump");
     } else {
       playAction("Idle");
       speedRef.current = 0; // 멈춤
@@ -158,8 +182,8 @@ function Character({orbitControls}, ref) {
   }, [model]);
 
   useEffect(() => {
-    rigidRef.current.lockRotations(true) // 회전하는 경우, 물리법칙이 작용되는 RigidBody 에는 회전이 적용될 필요가 없기때문에 rotation 을 잠굼
-  }, [])
+    rigidRef.current.lockRotations(true); // 회전하는 경우, 물리법칙이 작용되는 RigidBody 에는 회전이 적용될 필요가 없기때문에 rotation 을 잠굼
+  }, []);
 
   return (
     <RigidBody colliders={false} position={[0.1, 10, 0]} ref={rigidRef}>
@@ -178,4 +202,4 @@ function Character({orbitControls}, ref) {
   );
 }
 
-export default forwardRef(Character)
+export default forwardRef(Character);

@@ -1,11 +1,13 @@
 import * as THREE from "three";
-import { OrbitControls, SoftShadows, Environment } from "@react-three/drei";
+import { OrbitControls, SoftShadows, Environment, Sky } from "@react-three/drei";
 import { Physics, RigidBody } from "@react-three/rapier";
 import { Perf } from "r3f-perf";
 
 import Character from "./Character";
 import { useEffect, useRef } from "react";
 import { useFrame, useThree } from "@react-three/fiber";
+import Space from "./Space";
+import City from "./City";
 
 const SHADOW_CAMERA_SIZE = 20;
 
@@ -74,9 +76,10 @@ export default function Experience() {
       />
 
       <Environment preset="city" intensity={1} />
+      <Sky />
       <SoftShadows size={8} focus={0} samples={8} />
 
-      <Physics debug>
+      <Physics>
         <RigidBody colliders="ball">
           <mesh position={[4, 10, 0]} castShadow receiveShadow>
             <sphereGeometry />
@@ -94,16 +97,21 @@ export default function Experience() {
             <meshStandardMaterial color="#F9E79F" />
           </mesh>
         </RigidBody>
-        <RigidBody type="fixed">
-          <mesh
+        <RigidBody type="fixed" colliders="trimesh">
+          {/* <mesh
             rotation-x={THREE.MathUtils.degToRad(-90)}
             scale={100}
             receiveShadow
           >
             <planeGeometry />
             <meshStandardMaterial color="#5d6d72" />
-          </mesh>
+          </mesh> */}
+          {/* 직접 만든 메쉬 */}
+          {/* <Space /> */}
+          {/* 외부 메쉬 */}
+          <City />
         </RigidBody>
+
         <Character orbitControls={orbitControlsRef} ref={rigidRef} />
       </Physics>
     </>

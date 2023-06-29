@@ -1,6 +1,6 @@
 import { Canvas } from "@react-three/fiber";
 import Experience from "./Experience";
-import { KeyboardControls } from "@react-three/drei";
+import { KeyboardControls, Loader } from "@react-three/drei";
 
 import "./App.css";
 
@@ -22,6 +22,8 @@ function App() {
       <Canvas shadows>
         <Experience />
       </Canvas>
+      {/* progress bar */}
+      <Loader />
     </KeyboardControls>
   );
 }
