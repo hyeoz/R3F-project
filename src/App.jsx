@@ -40,7 +40,7 @@ function App() {
       {/* <Experience /> */}
 
       {/* 실습 1 */}
-      <color args={["#f0f0f0"]} attach="background" />
+      {/* <color args={["#f0f0f0"]} attach="background" />
       <Environment files="./aerodynamics_workshop_1k.hdr" />
       <OrbitControls makeDefault />
       <AccumulativeShadows
@@ -84,7 +84,7 @@ function App() {
       </Caustics>
       <EffectComposer>
         <Bloom luminanceThreshold={1} intensity={2} mipmapBlur levels={8} />
-      </EffectComposer>
+      </EffectComposer> */}
       {/* 실습 3 */}
       {/* <color args={["goldenrod"]} attach="background" />
       <Environment preset="city" />
@@ -125,6 +125,8 @@ function App() {
           <meshStandardMaterial color="indianred" />
         </mesh>
       </Center> */}
+
+      {/* TEST */}
     </Canvas>
   );
 }
