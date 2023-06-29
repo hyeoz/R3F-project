@@ -15,6 +15,7 @@ import {
 import Diamond from "./Diamond";
 // import { EffectComposer } from "postprocessing";
 import { Bloom, EffectComposer } from "@react-three/postprocessing";
+import Example from "./Example";
 
 function App() {
   const onCreated = (state) => {
@@ -28,14 +29,20 @@ function App() {
   return (
     <Canvas
       shadows
-      camera={{
-        // 실습 1
-        fov: 45,
-        near: 0.1,
-        far: 200,
-        position: [-2.5, 2, 8],
-      }}
+      // camera={{
+      //   // 실습 1
+      //   fov: 45,
+      //   near: 0.1,
+      //   far: 200,
+      //   position: [-2.5, 2, 8],
+      // }}
       // camera={{ position: [8, 1.5, 8], fov: 25 }} // 실습 3
+      camera={
+        {
+          position: [0, 0.2, 4.6],
+          fov: 30
+        }
+      }
     >
       {/* <Experience /> */}
 
@@ -126,7 +133,11 @@ function App() {
         </mesh>
       </Center> */}
 
-      {/* TEST */}
+      {/* 실습 7 */}
+      <ambientLight intensity={1} />
+      <Center position={[0, -2, 0]}>
+        <Example />
+      </Center>
     </Canvas>
   );
 }
