@@ -1,127 +1,118 @@
 import * as THREE from "three";
-import { OrbitControls, useGLTF } from "@react-three/drei";
-import { CylinderCollider, Physics, RigidBody } from "@react-three/rapier";
-import { useRef, useState } from "react";
-import { useFrame } from "@react-three/fiber";
+import { OrbitControls, SoftShadows, Environment, Sky } from "@react-three/drei";
+import { Physics, RigidBody } from "@react-three/rapier";
 import { Perf } from "r3f-perf";
 
+import Character from "./Character";
+import { useEffect, useRef } from "react";
+import { useFrame, useThree } from "@react-three/fiber";
+import Space from "./Space";
+import City from "./City";
+
+const SHADOW_CAMERA_SIZE = 20;
+
 export default function Experience() {
-  const cube = useRef();
-  const twister = useRef();
-  const [hitSound] = useState(() => new Audio("./hit.mp3"));
+  const orbitControlsRef = useRef();
+  const lightRef = useRef(); // 광원
+  const shadowCameraRef = useRef(); // 절두체 (그림자가 표현되는 범위)
+  const rigidRef = useRef();
 
-  const model = useGLTF("./books.glb"); // 모델에 충돌체를 적용할 때는 적합한 충돌체의 종류를 설정하는 것이 중요
+  const scene = useThree((state) => state.scene);
 
-  // useFrame((state, delta) => {
-  //   const time = state.clock.getElapsedTime(); // 시간에 대한 라디안 각도
+  // 그림자를 생성하는 카메라도 캐릭터를 계속 따라다니도록* 복습 필요
+  useFrame(() => {
+    if (rigidRef.current) {
+      const trans = rigidRef.current.translation();
+      const currentX = trans.x;
+      const currentY = trans.y;
+      const currentZ = trans.z;
 
-  //   // 회전
-  //   const euler = new THREE.Euler(0, time, 0); // 오일러 각도 (회전)
-  //   const quaternion = new THREE.Quaternion(); // 오일러 값을 사원수 (또는 해밀턴수, 복소수를 확장해 만든 수 체계) 로 변환
-  //   quaternion.setFromEuler(euler);
-  //   twister.current.setNextKinematicRotation(quaternion);
-  //   // 이동
-  //   const x = Math.cos(time) * 2; // -2 ~ 2
-  //   twister.current.setNextKinematicTranslation({ x, y: 0.8, z: 0 });
-  // });
+      const characterPos = new THREE.Vector3(currentX, currentY, currentZ); // 캐릭터 위치
+      const lightReverseDirection = new THREE.Vector3(0, 1, 1).normalize(); // 캐릭터를 기준으로 빛이 내려오는 반대 방향벡터 구하기
+      const currentPos = lightReverseDirection
+        .multiplyScalar(8) // 캐릭터와 광원 사이의 거리만큼
+        .add(characterPos); // 캐릭터 포지션 더해주기
 
-  const cubeJump = () => {
-    console.log(cube.current, "===> Rigid body ref");
-    cube.current.applyImpulse({ x: 0, y: 5, z: 0 }, true); // y축 방향으로 5만큼 이동하는 힘을 준다 / 2번재 인자를 이용해 sleep mode 에서 깨움
-    // cube.current.applyTorqueImpulse({ x: 0, y: -1, z: 0 }); // y축 방향으로 1만큼 회전하는 힘을 준다
-    // force 를 주고 몇 초간 기다리면 sleep mode 에 빠진다
-    if (cube.current.isSleeping()) {
-      // 방법 1
-      console.log("Im sleeping");
-      cube.current.wakeUp();
+      if (lightRef) {
+        lightRef.current.target.position.copy(characterPos); // 광원의 target = 캐릭터
+        lightRef.current.position.copy(currentPos); 
+      }
     }
-  };
+  });
 
-  const onCollisionEvent = (event) => {
-    console.log(
-      `${event.target.rigidBodyObject.name} is crashed to ${event.other.rigidBodyObject.name}`
+  useEffect(() => {
+    shadowCameraRef.current = new THREE.CameraHelper(
+      lightRef.current.shadow.camera
     );
+    scene.add(shadowCameraRef.current);
+    scene.add(lightRef.current.target);
 
-    hitSound.currentTime = 0; // 0초부터 시작하도록
-    hitSound.volume = Math.random();
-    hitSound.play();
-  };
+    return () => {
+      scene.remove(shadowCameraRef.current);
+      scene.remove(lightRef.current?.target);
+    };
+  }, [lightRef.current]);
 
   return (
     <>
-      <Perf />
-      <ambientLight intensity={0.5} />
-      <directionalLight castShadow position={[1, 2, 3]} intensity={1.5} />
+      <Perf position="top-left" />
+      <OrbitControls makeDefault enablePan={false} ref={orbitControlsRef} />
 
-      <OrbitControls makeDefault />
+      {/* <ambientLight intensity={0.2} /> */}
+      <directionalLight
+        position={[0, 1, 1]}
+        intensity={1}
+        castShadow
+        ref={lightRef}
+        shadow-normalBias={0.1} // 그림자 확대 시 노이즈 보정
+        // 임시방안 -> 절두체 크기를 키운다
+        // shadow-mapSize={[1024 * 4, 1024 * 4]}
+        // shadow-camera-near={1}
+        // shadow-camera-far={25}
+        // shadow-camera-top={SHADOW_CAMERA_SIZE}
+        // shadow-camera-bottom={-SHADOW_CAMERA_SIZE}
+        // shadow-camera-right={SHADOW_CAMERA_SIZE}
+        // shadow-camera-left={-SHADOW_CAMERA_SIZE}
+      />
 
-      <Physics debug gravity={[0, -9.81, 0]}>
-        {/* <RigidBody
-          colliders="ball"
-          position={[-1.5, 2, 0]}
-          restitution={1}
-          name="sphere"
-        >
-          <mesh castShadow>
+      <Environment preset="city" intensity={1} />
+      <Sky />
+      <SoftShadows size={8} focus={0} samples={8} />
+
+      <Physics>
+        <RigidBody colliders="ball">
+          <mesh position={[4, 10, 0]} castShadow receiveShadow>
             <sphereGeometry />
             <meshStandardMaterial color="#82E0AA" />
           </mesh>
-        </RigidBody> */}
-
-        {/* <RigidBody
-          position={[1.5, 2, 0]}
-          ref={cube}
-          // gravityScale={0.5} // 중력의 기본값은 [0, -9.81, 0]
-          // restitution={0.5} // 반발력의 기본값은 0, 부딪히는 메쉬 모두 1인 경우 멈추지 않고 튀김
-          // friction={0} // 마찰력의 기본값은 0.7
-          // mass={0.1} // 질량
-          name="box"
-          onCollisionEnter={onCollisionEvent}
-          // onSleep={() => console.log('SLEEPING')}
-          // onWake={() => console.log('WAKE UP')}
-        >
-          <mesh castShadow onClick={cubeJump}>
-            <boxGeometry />
+        </RigidBody>
+        <RigidBody colliders="trimesh">
+          <mesh
+            position={[1, 1, -5.25]}
+            rotation={[Math.PI * 0.3, 0, 0]}
+            castShadow
+            receiveShadow
+          >
+            <boxGeometry args={[5, 1, 0.25]} />
             <meshStandardMaterial color="#F9E79F" />
           </mesh>
-        </RigidBody> */}
-
-        {/* <RigidBody
-          type="kinematicPosition"
-          ref={twister}
-          position={[0, -0.5, 0]}
-          name="stick"
-        >
-          <mesh scale={[0.5, 0.5, 4]}>
-            <boxGeometry />
-            <meshStandardMaterial color="yellow" />
-          </mesh>
-        </RigidBody> */}
-
-        <RigidBody
-          type="fixed"
-          restitution={1}
-          friction={1}
-          mass={1}
-          name="floor"
-        >
-          <mesh
-            receiveShadow
-            position-y={-1.25}
+        </RigidBody>
+        <RigidBody type="fixed" colliders="trimesh">
+          {/* <mesh
             rotation-x={THREE.MathUtils.degToRad(-90)}
-            scale={10}
+            scale={100}
+            receiveShadow
           >
             <planeGeometry />
-            <meshStandardMaterial color="#5D6D7E" />
-          </mesh>
+            <meshStandardMaterial color="#5d6d72" />
+          </mesh> */}
+          {/* 직접 만든 메쉬 */}
+          {/* <Space /> */}
+          {/* 외부 메쉬 */}
+          <City />
         </RigidBody>
 
-        <RigidBody colliders={"trimesh"} position={[0, 5, 0]}>
-          {/* <CylinderCollider args={[0.5, 1.25]} /> */}
-          <primitive object={model.scene} scale={5} position-y={-0.5}>
-            <axesHelper />
-          </primitive>
-        </RigidBody>
+        <Character orbitControls={orbitControlsRef} ref={rigidRef} />
       </Physics>
     </>
   );

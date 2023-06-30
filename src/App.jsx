@@ -1,31 +1,24 @@
 import { Canvas } from "@react-three/fiber";
-import * as THREE from "three";
-import Experience from "./Experience";
+// import Experience from "./Experience";
+// import { KeyboardControls, Loader } from "@react-three/drei";
+
 import "./App.css";
-import Suzi from "./Suzi";
+// import Suzi from "./Suzi";
 import {
-  AccumulativeShadows,
-  Caustics,
+  // AccumulativeShadows,
+  // Caustics,
   Center,
-  Environment,
-  MeshTransmissionMaterial,
-  OrbitControls,
-  RandomizedLight,
+  // Environment,
+  // MeshTransmissionMaterial,
+  // OrbitControls,
+  // RandomizedLight,
 } from "@react-three/drei";
-import Diamond from "./Diamond";
+// import Diamond from "./Diamond";
 // import { EffectComposer } from "postprocessing";
-import { Bloom, EffectComposer } from "@react-three/postprocessing";
+// import { Bloom, EffectComposer } from "@react-three/postprocessing";
 import Example from "./Example";
 
 function App() {
-  const onCreated = (state) => {
-    // const gl = state.gl;
-    // gl.setClearColor('#0000ff', 1)
-
-    const scene = state.scene;
-    scene.background = new THREE.Color("#ff0000");
-  };
-
   return (
     <Canvas
       shadows
@@ -37,12 +30,10 @@ function App() {
       //   position: [-2.5, 2, 8],
       // }}
       // camera={{ position: [8, 1.5, 8], fov: 25 }} // 실습 3
-      camera={
-        {
-          position: [0, 0.2, 4.6],
-          fov: 30
-        }
-      }
+      camera={{
+        position: [0, 0.2, 4.6],
+        fov: 30,
+      }}
     >
       {/* <Experience /> */}
 
@@ -134,11 +125,30 @@ function App() {
       </Center> */}
 
       {/* 실습 7 */}
-      <ambientLight intensity={1} />
+      <ambientLight />
       <Center position={[0, -2, 0]}>
         <Example />
       </Center>
     </Canvas>
+    // <KeyboardControls
+    //   map={[
+    //     {
+    //       name: "forward",
+    //       keys: ["ArrowUp", "KeyW"],
+    //     },
+    //     { name: "backward", keys: ["ArrowDown", "KeyS"] },
+    //     { name: "leftward", keys: ["ArrowLeft", "KeyA"] },
+    //     { name: "rightward", keys: ["ArrowRight", "KeyD"] },
+    //     { name: "walk", keys: ["Shift"] },
+    //     { name: "jump", keys: ["Space"] },
+    //   ]}
+    // >
+    //   <Canvas shadows>
+    //     <Experience />
+    //   </Canvas>
+    //   {/* progress bar */}
+    //   <Loader />
+    // </KeyboardControls>
   );
 }
 
