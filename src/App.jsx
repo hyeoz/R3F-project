@@ -1,22 +1,23 @@
+/* eslint-disable react/no-unknown-property */
 import { Canvas } from "@react-three/fiber";
 // import Experience from "./Experience";
 // import { KeyboardControls, Loader } from "@react-three/drei";
 
 import "./App.css";
-// import Suzi from "./Suzi";
+import Suzi from "./Suzi";
 import {
-  // AccumulativeShadows,
+  AccumulativeShadows,
   // Caustics,
   Center,
-  // Environment,
+  Environment,
   // MeshTransmissionMaterial,
-  // OrbitControls,
-  // RandomizedLight,
+  OrbitControls,
+  RandomizedLight,
 } from "@react-three/drei";
 // import Diamond from "./Diamond";
 // import { EffectComposer } from "postprocessing";
 // import { Bloom, EffectComposer } from "@react-three/postprocessing";
-import Example from "./Example";
+// import Example from "./Example";
 
 function App() {
   return (
@@ -29,11 +30,11 @@ function App() {
       //   far: 200,
       //   position: [-2.5, 2, 8],
       // }}
-      // camera={{ position: [8, 1.5, 8], fov: 25 }} // 실습 3
-      camera={{
-        position: [0, 0.2, 4.6],
-        fov: 30,
-      }}
+      camera={{ position: [8, 1.5, 8], fov: 25 }} // 실습 3
+      // camera={{
+      //   position: [0, 0.2, 4.6],
+      //   fov: 30,
+      // }}
     >
       {/* <Experience /> */}
 
@@ -84,9 +85,9 @@ function App() {
         <Bloom luminanceThreshold={1} intensity={2} mipmapBlur levels={8} />
       </EffectComposer> */}
       {/* 실습 3 */}
-      {/* <color args={["goldenrod"]} attach="background" />
-      <Environment preset="city" />
+      {/* <color args={["goldenrod"]} attach="background" /> */}
       <OrbitControls />
+      <Environment preset="city" />
       <AccumulativeShadows
         temporal
         frames={100}
@@ -122,13 +123,13 @@ function App() {
           <boxGeometry args={[0.5, 0.5, 0.5]} />
           <meshStandardMaterial color="indianred" />
         </mesh>
-      </Center> */}
+      </Center>
 
       {/* 실습 7 */}
-      <ambientLight />
+      {/* <ambientLight />
       <Center position={[0, -2, 0]}>
         <Example />
-      </Center>
+      </Center> */}
     </Canvas>
     // <KeyboardControls
     //   map={[
